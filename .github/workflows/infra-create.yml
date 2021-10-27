@@ -1,0 +1,40 @@
+name: Infra prepare
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - dev
+
+    paths:
+    - infra/**
+    - .github/workflows/infra-create.yml
+  
+  pull_request:
+    branches:
+    - dev
+
+    paths:
+    - infra/**
+    - .github/workflows/infra-create.yml
+env:
+  REGISTRY_NAME: esoc-acr
+
+jobs:
+  terraform:
+      runs-on: ubuntu-latest
+      steps:
+        # Checkout the repo
+        - uses: actions/checkout@v2
+        - name: Setup Terraform
+          uses: hashicorp/setup-terraform@v1        
+        - uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+        - name: run terraform
+          run: |
+            terraform fmt
+            terraform validate
+            terraform init
+            terraform plan
+            terraform apply -auto-approve
