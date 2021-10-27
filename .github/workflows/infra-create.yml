@@ -33,7 +33,6 @@ jobs:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         - name: run terraform
           run: |
-            terraform fmt
             terraform validate
             terraform init
             terraform plan
