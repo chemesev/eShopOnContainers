@@ -33,8 +33,8 @@ jobs:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
         - name: run terraform
           run: |
-            terraform validate
             terraform init
+            terraform validate
             terraform plan
             terraform apply -auto-approve
           working-directory: infra
