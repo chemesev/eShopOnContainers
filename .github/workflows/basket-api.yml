@@ -38,12 +38,13 @@ jobs:
           login-server: ${{ env.REGISTRY }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-      - uses: mr-smithers-excellent/docker-build-push@v5
+      - uses: elgohr/Publish-Docker-Github-Action@3
         name: Build & push Docker image
         with:
-          image: ${{ env.IMAGE }}
+          name: ${{ env.IMAGE }}
           tags: ${{ github.head_ref }}
           registry: ${{ env.REGISTRY }}
           dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile
+          context: src/
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
