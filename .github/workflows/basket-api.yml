@@ -21,32 +21,29 @@ on:
     - .github/workflows/basket-api.yml
 env:
   SERVICE: basket-api
-  IMAGE: basket.api
+  IMAGE: eshop/basket.api
+  REGISTRY: esocregistry.azurecr.io
+  DOCKERFILE_PATH: src/Services/Basket/Basket.API
 
 jobs:
-
-  BuildContainersForPR_Linux:
+  build-and-push:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
+    #if: ${{ github.event_name != 'pull_request' }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - uses: ./.github/workflows/composite/build
-      with:
-        service: ${{ env.SERVICE }}
-        registry_endpoint: ${{ secrets.REGISTRY_ENDPOINT }}
-
-  BuildLinux:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request' }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - uses: ./.github/workflows/composite/build-push
-      with:
-        service: ${{ env.SERVICE }}
-        registry_host: ${{ secrets.REGISTRY_HOST }}
-        registry_endpoint: ${{ secrets.REGISTRY_ENDPOINT }}
-        image_name: ${{ env.IMAGE }}
-        registry_username: ${{ secrets.USERNAME }}
-        registry_password: ${{ secrets.PASSWORD }}
+      - uses: actions/checkout@v2
+        name: Check out code
+      - uses: azure/docker-login@v1
+        name: Login to ACR
+        with:
+          login-server: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - uses: mr-smithers-excellent/docker-build-push@v5
+        name: Build & push Docker image
+        with:
+          image: ${{ env.IMAGE }}
+          tags: ${{ github.head_ref }}
+          registry: ${{ env.REGISTRY }}
+          dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
