@@ -38,7 +38,7 @@ jobs:
           login-server: ${{ env.REGISTRY }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-      - uses: elgohr/Publish-Docker-Github-Action@3
+      - uses: elgohr/Publish-Docker-Github-Action@master
         name: Build & push Docker image
         with:
           name: ${{ env.IMAGE }}
