@@ -37,5 +37,5 @@ jobs:
         service: ${{ env.IMAGE }}
         service_dockerfile_path: ${{ env.DOCKERFILE_PATH }}
         registry: ${{ env.REGISTRY }}
-        registry_login: ${{ secrets.USERNAME }}
-        registry_password: ${{ secrets.PASSWORD }}
+        registry_login: ${{ secrets.REGISTRY_USERNAME }}
+        registry_password: ${{ secrets.REGISTRY_PASSWORD }}
