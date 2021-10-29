@@ -48,12 +48,12 @@ RUN dotnet restore "eShopOnContainers-ServicesAndWebApps.sln"
 
 COPY . .
 WORKDIR /src/Services/Basket/Basket.API
-RUN dotnet build
-RUN dotnet test
 RUN dotnet publish --no-restore -c Release -o /app
 
 FROM build as unittest
 WORKDIR /src/Services/Basket/Basket.UnitTests
+RUN dotnet build
+RUN dotnet test
 
 FROM build as functionaltest
 WORKDIR /src/Services/Basket/Basket.FunctionalTests
