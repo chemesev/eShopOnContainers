@@ -30,21 +30,10 @@ jobs:
     runs-on: ubuntu-latest
     #if: ${{ github.event_name != 'pull_request' }}
     steps:
-      - uses: actions/checkout@v2
-        name: Check out code
-      - uses: azure/docker-login@v1
-        name: Login to ACR
-        with:
-          login-server: ${{ env.REGISTRY }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-      - uses: elgohr/Publish-Docker-Github-Action@master
-        name: Build & push Docker image
-        with:
-          name: ${{ env.IMAGE }}
-          tags: ${{ github.head_ref }}
-          registry: ${{ env.REGISTRY }}
-          dockerfile: ${{ env.DOCKERFILE_PATH }}/Dockerfile
-          context: src/
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+    - uses: ./.github/workflows/actions/build-and-push
+      with:
+        service: ${{ env.IMAGE }}
+        service_dockerfile_path: ${{ env.DOCKERFILE_PATH }}
+        registry: ${{ env.REGISTRY }}
+        registry_login: ${{ secrets.USERNAME }}
+        registry_password: ${{ secrets.PASSWORD }}

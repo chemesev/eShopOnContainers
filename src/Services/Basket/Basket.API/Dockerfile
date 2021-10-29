@@ -52,7 +52,7 @@ RUN dotnet publish --no-restore -c Release -o /app
 
 FROM build as unittest
 WORKDIR /src/Services/Basket/Basket.UnitTests
-RUN dotnet build
+RUN dotnet build --no-restore
 RUN dotnet test
 
 FROM build as functionaltest
