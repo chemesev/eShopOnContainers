@@ -21,32 +21,22 @@ on:
     - .github/workflows/basket-api.yml
 env:
   SERVICE: basket-api
-  IMAGE: basket.api
+  IMAGE: eshop/basket.api
+  REGISTRY: esocregistry.azurecr.io
+  DOCKERFILE_PATH: src/Services/Basket/Basket.API
 
 jobs:
-
-  BuildContainersForPR_Linux:
+  build-and-push:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
+    #if: ${{ github.event_name != 'pull_request' }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - uses: ./.github/workflows/composite/build
+    - name: Build and push
+      uses: ./.github/workflows/actions/build-and-push
       with:
-        service: ${{ env.SERVICE }}
-        registry_endpoint: ${{ secrets.REGISTRY_ENDPOINT }}
-
-  BuildLinux:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request' }}
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - uses: ./.github/workflows/composite/build-push
-      with:
-        service: ${{ env.SERVICE }}
-        registry_host: ${{ secrets.REGISTRY_HOST }}
-        registry_endpoint: ${{ secrets.REGISTRY_ENDPOINT }}
-        image_name: ${{ env.IMAGE }}
-        registry_username: ${{ secrets.USERNAME }}
-        registry_password: ${{ secrets.PASSWORD }}
+        service: ${{ env.IMAGE }}
+        service_dockerfile_path: ${{ env.DOCKERFILE_PATH }}
+        registry: ${{ env.REGISTRY }}
+        registry_login: ${{ secrets.REGISTRY_USERNAME }}
+        registry_password: ${{ secrets.REGISTRY_PASSWORD }}
