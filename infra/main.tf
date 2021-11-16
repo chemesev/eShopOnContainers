@@ -51,6 +51,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
     load_balancer_sku = "Standard"
     network_plugin    = "kubenet"
   }
+  addon_profile {
+    http_application_routing {
+      enabled = true
+    }
+  }
 
   identity {
     type = "SystemAssigned"
