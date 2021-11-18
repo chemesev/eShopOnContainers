@@ -64,9 +64,9 @@ runs:
       value-files: >-
         [
           "${{ inputs.chart_root }}/values.yaml", 
-          "${{ inputs.chart_root }}/../app.yaml",
-          "${{ inputs.chart_root }}/../inf.yaml",
-          "${{ inputs.chart_root }}/../ingress_values.yaml",
+          "deploy/k8s/helm/app.yaml",
+          "deploy/k8s/helm/inf.yaml",
+          "deploy/k8s/helm/ingress_values.yaml"
         ]
     env:
       TAG: ${{ env.BRANCH }}
