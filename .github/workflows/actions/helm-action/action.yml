@@ -38,6 +38,14 @@ runs:
       cluster-name: ${{ inputs.aks_name }}
       resource-group: ${{ inputs.resource_group }}
   
+  - name: read kubeconfig
+    shell: bash
+    run: |
+      config=$(cat $KUBECONFIG)
+      echo $config
+      echo "KUBECONFIG_FILE=$config" >> $GITHUB_ENV
+
+
   - name: Set branch name as env variable
     shell: bash
     run: |
@@ -55,4 +63,4 @@ runs:
       helm: helm3
     env:
       TAG: ${{ env.BRANCH }}
-      KUBECONFIG_FILE: '${{ env.KUBECONFIG }}'
+      KUBECONFIG_FILE: '${{ env.KUBECONFIG_FILE }}'
