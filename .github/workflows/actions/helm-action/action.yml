@@ -41,9 +41,9 @@ runs:
   - name: read kubeconfig
     shell: bash
     run: |
-      config=$(cat $KUBECONFIG)
-      echo $config
-      echo "KUBECONFIG_FILE='$config'" >> $GITHUB_ENV
+      echo 'KUBECONFIG_FILE<<EOF' >> $GITHUB_ENV
+      $(<$KUBECONFIG) >> $GITHUB_ENV
+      echo 'EOF' >> $GITHUB_ENV
 
 
   - name: Set branch name as env variable
