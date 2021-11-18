@@ -60,7 +60,7 @@ runs:
       namespace: ${{ inputs.namespace }}
       chart: ${{ inputs.chart_root }}
       token: '${{ github.token }}'
-      helm: helm3
+      value-files: [ "values.yaml"]
     env:
       TAG: ${{ env.BRANCH }}
       KUBECONFIG_FILE: '${{ env.KUBECONFIG_FILE }}'
