@@ -62,8 +62,8 @@ runs:
       token: '${{ github.token }}'
       value-files: >-
         [
-          "values.yaml", 
-          "values.production.yaml"
+          "${{ inputs.chart_root }}/values.yaml", 
+          "${{ inputs.chart_root }}/values.production.yaml"
         ]
     env:
       TAG: ${{ env.BRANCH }}
