@@ -61,7 +61,13 @@ runs:
       chart: ${{ inputs.chart_root }}
       token: '${{ github.token }}'
       helm: helm3
-      value-files: "${{ inputs.chart_root }}/values.yaml"
+      value-files: >-
+        [
+          "${{ inputs.chart_root }}/values.yaml", 
+          "${{ inputs.chart_root }}/app.yaml",
+          "${{ inputs.chart_root }}/inf.yaml",
+          "${{ inputs.chart_root }}/ingress_values.yaml",
+        ]
     env:
       TAG: ${{ env.BRANCH }}
       KUBECONFIG_FILE: '${{ env.KUBECONFIG_FILE }}'
