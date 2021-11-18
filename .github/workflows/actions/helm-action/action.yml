@@ -60,11 +60,7 @@ runs:
       namespace: ${{ inputs.namespace }}
       chart: ${{ inputs.chart_root }}
       token: '${{ github.token }}'
-      value-files: >-
-        [
-          "${{ inputs.chart_root }}/values.yaml", 
-          "${{ inputs.chart_root }}/values.production.yaml"
-        ]
+      value-files: "${{ inputs.chart_root }}/values.yaml"
     env:
       TAG: ${{ env.BRANCH }}
       KUBECONFIG_FILE: '${{ env.KUBECONFIG_FILE }}'
