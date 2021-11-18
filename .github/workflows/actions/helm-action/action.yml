@@ -42,7 +42,7 @@ runs:
     shell: bash
     run: |
       echo 'KUBECONFIG_FILE<<EOF' >> $GITHUB_ENV
-      $(<$KUBECONFIG) >> $GITHUB_ENV
+      cat $KUBECONFIG >> $GITHUB_ENV
       echo 'EOF' >> $GITHUB_ENV
 
 
