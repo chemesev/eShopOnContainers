@@ -26,7 +26,7 @@ jobs:
       - uses: ./.github/workflows/actions/helm-action
         with:
           azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          aks_name: ${{ secrets.CLUSTER_NAME }}
+          aks_name: ${{ secrets.AKS_NAME }}
           resource_group: ${{ secrets.RESOURCE_GROUP }}
           registry_url: ${{ secrets.REGISTRY_URL }}
           chart: ${{ env.CHART }}
