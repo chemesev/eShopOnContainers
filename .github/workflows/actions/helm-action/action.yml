@@ -68,8 +68,9 @@ runs:
       token: '${{ github.token }}'
       helm: helm3
       values: |
-          image.tag: ${{ inputs.tag }}
-          image.repository: ${{ inputs.registry_url }}/${{ inputs.image }}
+        image:
+          repository: ${{ inputs.registry_url }}/${{ inputs.image }}
+          tag: ${{ inputs.tag }}
       value-files: >-
         [
           "${{ inputs.chart_root }}/values.yaml", 
