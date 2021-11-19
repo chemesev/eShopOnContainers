@@ -1,0 +1,35 @@
+name: Deploy basket-api
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+    - deploy
+  workflow_run:
+    workflows: ["basket-api"]
+    branches: [dev]
+    types: [completed]
+
+
+env:
+  CHART: basket-api
+  NAMESPACE: eshop
+  CHART_ROOT: deploy/k8s/helm/basket-api
+
+jobs:
+  deploy-to-k8s:
+    environment: Develop
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: helm deploy
+        uses: ./.github/workflows/actions/helm-action
+        with:
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          aks_name: ${{ secrets.AKS_NAME }}
+          resource_group: ${{ secrets.RESOURCE_GROUP }}
+          registry_url: ${{ secrets.REGISTRY_URL }}
+          chart: ${{ env.CHART }}
+          chart_root: ${{ env.CHART_ROOT }}
+          namespace: ${{ env.NAMESPACE }}

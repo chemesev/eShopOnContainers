@@ -1,0 +1,73 @@
+name: "Deploy Helm to AKS"
+description: "Deploys a helm chart to AKS"
+
+inputs:
+  azure_credentials:
+    description: "Credentials to connect to AKS"
+    required: true
+  aks_name:
+    description: "Name of AKS cluster"
+    required: true
+  resource_group:
+    description: "Resource group of AKS cluster"
+    required: true
+  registry_url:
+    description: "Image registry host e.g. myacr.azureacr.io"
+    required: true
+  chart:
+    description: "Chart name"
+    required: true
+  chart_root:
+    description: "Root folder of chart"
+    required: true
+  namespace:
+    description: "Namespace to deploy to"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - uses: azure/login@v1
+    with:
+      creds: ${{ inputs.azure_credentials }}
+
+  - uses: azure/aks-set-context@v1
+    name: Set AKS context
+    with:
+      creds: '${{ inputs.azure_credentials }}'
+      cluster-name: ${{ inputs.aks_name }}
+      resource-group: ${{ inputs.resource_group }}
+  
+  - name: read kubeconfig
+    shell: bash
+    run: |
+      echo 'KUBECONFIG_FILE<<EOF' >> $GITHUB_ENV
+      cat $KUBECONFIG >> $GITHUB_ENV
+      echo 'EOF' >> $GITHUB_ENV
+
+
+  - name: Set branch name as env variable
+    shell: bash
+    run: |
+      currentbranch=$(echo ${GITHUB_REF##*/})
+      echo "running on $currentbranch"
+      echo "BRANCH=$currentbranch" >> $GITHUB_ENV
+  
+  - name: Deploy Chart
+    uses: deliverybot/helm@v1
+    with:
+      release: "eshop-${{ inputs.chart }}"
+      namespace: ${{ inputs.namespace }}
+      chart: ${{ inputs.chart_root }}
+      token: '${{ github.token }}'
+      helm: helm3
+      value-files: >-
+        [
+          "${{ inputs.chart_root }}/values.yaml", 
+          "deploy/k8s/helm/app.yaml",
+          "deploy/k8s/helm/inf.yaml",
+          "deploy/k8s/helm/ingress_values.yaml"
+        ]
+    env:
+      TAG: ${{ env.BRANCH }}
+      KUBECONFIG_FILE: '${{ env.KUBECONFIG_FILE }}'

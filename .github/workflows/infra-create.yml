@@ -5,7 +5,6 @@ on:
   push:
     branches:
     - dev
-
     paths:
     - infra/**
     - .github/workflows/infra-create.yml
@@ -13,10 +12,10 @@ on:
   pull_request:
     branches:
     - dev
-
     paths:
     - infra/**
     - .github/workflows/infra-create.yml
+
 env:
   REGISTRY_NAME: esoc-acr
 

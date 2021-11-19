@@ -5,7 +5,6 @@ on:
   push:
     branches:
     - dev
-
     paths:
     - src/BuildingBlocks/**
     - src/Web/WebMVC/**
@@ -15,7 +14,6 @@ on:
     branches:
     - dev
     paths:
-    
     - src/BuildingBlocks/**
     - src/Web/WebMVC/**
     - .github/workflows/webmvc.yml
