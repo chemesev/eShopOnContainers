@@ -65,3 +65,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
     enabled = true
   }
 }
+
+resource "azurerm_role_assignment" "attach_acr" {
+  count = var.enable_attach_acr ? 1 : 0
+
+  scope                = azurerm_container_registry.acr.id
+  role_definition_name = "AcrPull"
+  principal_id         = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+}

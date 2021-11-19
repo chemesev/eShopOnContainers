@@ -41,6 +41,11 @@ variable "tags" {
   }
 }
 
+variable "enable_attach_acr" {
+  type = bool
+
+  default = true
+}
 // Backend
 variable "resource_group_name" {
   description = "Name of the resource group."
