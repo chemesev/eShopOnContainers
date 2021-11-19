@@ -7,7 +7,7 @@ on:
     - deploy
   workflow_run:
     workflows: ["basket-api"]
-    branches: [helm_deploy]
+    branches: [dev]
     types: [completed]
 
 
