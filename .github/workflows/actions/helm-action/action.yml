@@ -14,6 +14,12 @@ inputs:
   registry_url:
     description: "Image registry host e.g. myacr.azureacr.io"
     required: true
+  image:
+    description: "docker image name e.g. eshop/service"
+    required: true
+  tag:
+    description: "Image tag"
+    required: true
   chart:
     description: "Chart name"
     required: true
@@ -61,6 +67,9 @@ runs:
       chart: ${{ inputs.chart_root }}
       token: '${{ github.token }}'
       helm: helm3
+      values: |
+          image.tag: ${{ inputs.tag }}
+          image.repository: ${{ inputs.registry_url }}/${{ inputs.image }}
       value-files: >-
         [
           "${{ inputs.chart_root }}/values.yaml", 

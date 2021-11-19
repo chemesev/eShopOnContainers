@@ -26,7 +26,7 @@ runs:
     - uses: azure/docker-login@v1
       name: Login to ACR
       with:
-        login-server: ${{ env.REGISTRY }}
+        login-server: ${{ inputs.registry }}
         username: ${{ inputs.registry_login }}
         password: ${{ inputs.registry_password }}
     - uses: elgohr/Publish-Docker-Github-Action@master

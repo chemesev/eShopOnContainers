@@ -21,7 +21,6 @@ on:
 env:
   SERVICE: basket-api
   IMAGE: eshop/basket.api
-  REGISTRY: esocregistry.azurecr.io
   DOCKERFILE_PATH: src/Services/Basket/Basket.API
 
 jobs:
@@ -36,6 +35,6 @@ jobs:
       with:
         service: ${{ env.IMAGE }}
         service_dockerfile_path: ${{ env.DOCKERFILE_PATH }}
-        registry: ${{ env.REGISTRY }}
+        registry: ${{ secrets.REGISTRY_URL }}
         registry_login: ${{ secrets.REGISTRY_USERNAME }}
         registry_password: ${{ secrets.REGISTRY_PASSWORD }}

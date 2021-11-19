@@ -14,6 +14,8 @@ on:
 env:
   CHART: basket-api
   NAMESPACE: eshop
+  IMAGE: eshop/basket.api
+  TAG: ${{ github.ref_name }}
   CHART_ROOT: deploy/k8s/helm/basket-api
 
 jobs:
@@ -30,6 +32,8 @@ jobs:
           aks_name: ${{ secrets.AKS_NAME }}
           resource_group: ${{ secrets.RESOURCE_GROUP }}
           registry_url: ${{ secrets.REGISTRY_URL }}
+          image: ${{ env.IMAGE }}
+          tag: ${{ env.TAG }}
           chart: ${{ env.CHART }}
           chart_root: ${{ env.CHART_ROOT }}
           namespace: ${{ env.NAMESPACE }}
