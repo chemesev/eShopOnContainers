@@ -19,9 +19,12 @@ on:
     - .github/workflows/basket-api.yml
     
 env:
-  SERVICE: basket-api
   IMAGE: eshop/basket.api
+  CHART: basket-api
+  TAG: ${{ github.ref_name }}
+  NAMESPACE: eshop
   DOCKERFILE_PATH: src/Services/Basket/Basket.API
+  CHART_ROOT: deploy/k8s/helm/basket-api
 
 jobs:
   build-and-push:
@@ -33,8 +36,28 @@ jobs:
     - name: Build and push
       uses: ./.github/workflows/actions/build-and-push
       with:
-        service: ${{ env.IMAGE }}
-        service_dockerfile_path: ${{ env.DOCKERFILE_PATH }}
+        image: ${{ env.IMAGE }}
+        dockerfile_path: ${{ env.DOCKERFILE_PATH }}
         registry: ${{ secrets.REGISTRY_URL }}
         registry_login: ${{ secrets.REGISTRY_USERNAME }}
         registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+
+  deploy-to-aks:
+    environment: Develop
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: helm deploy
+        uses: ./.github/workflows/actions/helm-action
+        with:
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          aks_name: ${{ secrets.AKS_NAME }}
+          resource_group: ${{ secrets.RESOURCE_GROUP }}
+          registry_url: ${{ secrets.REGISTRY_URL }}
+          image: ${{ env.IMAGE }}
+          tag: ${{ env.TAG }}
+          chart: ${{ env.CHART }}
+          chart_root: ${{ env.CHART_ROOT }}
+          namespace: ${{ env.NAMESPACE }}        

@@ -2,10 +2,10 @@ name: "Build and Push"
 description: "Builds a docker image with pushing to ACR"
 
 inputs:
-  service:
-    description: "Service to build"
+  image:
+    description: "Image name to build"
     required: true
-  service_dockerfile_path:
+  dockerfile_path:
     description: "dockerfile path for Service"
     required: true
   registry:
@@ -32,10 +32,10 @@ runs:
     - uses: elgohr/Publish-Docker-Github-Action@master
       name: Build & push Docker image
       with:
-        name: ${{ inputs.service }}
+        name: ${{ inputs.image }}
         tags: ${{ github.head_ref }}
         registry: ${{ inputs.registry }}
-        dockerfile: ${{ inputs.service_dockerfile_path }}/Dockerfile
+        dockerfile: ${{ inputs.dockerfile_path }}/Dockerfile
         context: src/
         username: ${{ inputs.registry_login }}
         password: ${{ inputs.registry_password }}
