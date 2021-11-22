@@ -53,6 +53,8 @@ RUN dotnet publish --no-restore -c Release -o /app
 
 FROM build as unittest
 WORKDIR /src/Services/Catalog/Catalog.UnitTests
+RUN dotnet build --no-restore
+RUN dotnet test
 
 FROM build as functionaltest
 WORKDIR /src/Services/Catalog/Catalog.FunctionalTests
