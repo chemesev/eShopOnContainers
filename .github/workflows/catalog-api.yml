@@ -19,8 +19,8 @@ on:
     - .github/workflows/catalog-api.yml
     
 env:
-  IMAGE: eshop/basket.api
-  CHART: basket-api
+  IMAGE: eshop/catalog.api
+  CHART: catalog-api
   TAG: ${{ github.ref_name }}
   NAMESPACE: eshop
   DOCKERFILE_PATH: src/Services/Catalog/Catalog.API
