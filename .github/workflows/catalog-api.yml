@@ -21,7 +21,7 @@ on:
 env:
   IMAGE: eshop/catalog.api
   CHART: catalog-api
-  TAG: ${{ github.ref_name }}
+  TAG: ${{ github.base_ref }}
   NAMESPACE: eshop
   DOCKERFILE_PATH: src/Services/Catalog/Catalog.API
   CHART_ROOT: deploy/k8s/helm/catalog-api
