@@ -41,6 +41,11 @@ jobs:
         registry: ${{ secrets.REGISTRY_URL }}
         registry_login: ${{ secrets.REGISTRY_USERNAME }}
         registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+    - name: Run Tests
+      uses: ./.github/workflows/actions/run-tests
+      with:
+        service: ${{ env.CHART }}
+        tag: ${{ env.TAG }}
 
   deploy-to-aks:
     environment: Develop

@@ -1,0 +1,30 @@
+name: "Run Tests"
+description: "Run Unit and Integration Tests for Service"
+
+inputs:
+  service:
+    description: "Service name to build and test"
+    required: true
+  tag:
+    description: "Image tag to build and test"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+      name: Check out code
+    - name: Run Unit Tests
+      shell: bash
+      run: |
+        docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up ${{ inputs.service }}-unit-test 
+      env:
+        TAG: ${{ inputs.tag }}
+      working-directory: src/
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()    
+      with:
+        name: UnitTests            
+        path: './tests-results/${{ inputs.service }}-unit-test-results.xml'
+        reporter: dotnet-trx         
