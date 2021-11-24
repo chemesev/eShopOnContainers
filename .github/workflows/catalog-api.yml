@@ -5,7 +5,6 @@ on:
   push:
     branches:
     - dev
-
     paths:
     - src/BuildingBlocks/**
     - src/Services/Catalog/**
@@ -14,45 +13,60 @@ on:
   pull_request:
     branches:
     - dev
-    
     paths:
     - src/BuildingBlocks/**
     - src/Services/Catalog/**
     - .github/workflows/catalog-api.yml
+    
 env:
-  SERVICE: catalog-api
-  IMAGE: catalog.api
-  DOTNET_VERSION: 5.0.x
-  PROJECT_PATH: Services/Catalog/Catalog.API
-  TESTS_PATH: Services/Catalog/Catalog.UnitTests
+  IMAGE: eshop/catalog.api
+  CHART: catalog-api
+  TAG: ${{ github.base_ref }}
+  NAMESPACE: eshop
+  DOCKERFILE_PATH: src/Services/Catalog/Catalog.API
+  CHART_ROOT: deploy/k8s/helm/catalog-api
 
 jobs:
-
-  BuildContainersForPR_Linux:
+  build-and-push:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
+    #if: ${{ github.event_name != 'pull_request' }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - uses: ./.github/workflows/composite/build-test
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v5
+    - run: echo ${{ steps.branch-name.outputs.branch }}
+    - name: Build and push
+      uses: ./.github/workflows/actions/build-and-push
       with:
-        service: ${{ env.SERVICE }}
-        registry_endpoint: ${{ secrets.REGISTRY_ENDPOINT }}
-        dotnet_version: ${{ env.DOTNET_VERSION }}
-        project_path: ${{ env.PROJECT_PATH }}
-        tests_path: ${{ env.TESTS_PATH }}
+        image: ${{ env.IMAGE }}
+        dockerfile_path: ${{ env.DOCKERFILE_PATH }}
+        registry: ${{ secrets.REGISTRY_URL }}
+        registry_login: ${{ secrets.REGISTRY_USERNAME }}
+        registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+    - name: Run Tests
+      uses: ./.github/workflows/actions/run-tests
+      with:
+        service: ${{ env.CHART }}
+        tag: ${{ steps.branch-name.outputs.branch }}
 
-  BuildLinux:
+  deploy-to-aks:
+    environment: Develop
     runs-on: ubuntu-latest
+    needs: build-and-push
     if: ${{ github.event_name != 'pull_request' }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-    - uses: ./.github/workflows/composite/build-push
-      with:
-        service: ${{ env.SERVICE }}
-        registry_host: ${{ secrets.REGISTRY_HOST }}
-        registry_endpoint: ${{ secrets.REGISTRY_ENDPOINT }}
-        image_name: ${{ env.IMAGE }}
-        registry_username: ${{ secrets.USERNAME }}
-        registry_password: ${{ secrets.PASSWORD }}
+      - uses: actions/checkout@v2
+      - name: helm deploy
+        uses: ./.github/workflows/actions/helm-action
+        with:
+          azure_credentials: ${{ secrets.AZURE_CREDENTIALS }}
+          aks_name: ${{ secrets.AKS_NAME }}
+          resource_group: ${{ secrets.RESOURCE_GROUP }}
+          registry_url: ${{ secrets.REGISTRY_URL }}
+          image: ${{ env.IMAGE }}
+          tag: ${{ steps.branch-name.outputs.branch }}
+          chart: ${{ env.CHART }}
+          chart_root: ${{ env.CHART_ROOT }}
+          namespace: ${{ env.NAMESPACE }}        

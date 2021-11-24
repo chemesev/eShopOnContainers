@@ -59,7 +59,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/basket-functional-test-results.xml
+        - trx;LogFileName=/tests/basket-api-functional-test-results.xml
 
   basket-api-unit-test:
     environment:
@@ -81,7 +81,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/basket-unit-test-results.xml
+        - trx;LogFileName=/tests/basket-api-unit-test-results.xml
 
   catalog-api-functional-test:
     environment:
@@ -105,7 +105,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/catalog-functional-test-results.xml
+        - trx;LogFileName=/tests/catalog-api-functional-test-results.xml
 
   catalog-api-unit-test:
     environment:
@@ -129,7 +129,7 @@ services:
         - dotnet
         - test
         - --logger
-        - trx;LogFileName=/tests/catalog-unit-test-results.xml
+        - trx;LogFileName=/tests/catalog-api-unit-test-results.xml
 
   ordering-api-functional-test:
     environment:

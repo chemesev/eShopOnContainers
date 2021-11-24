@@ -33,6 +33,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v5
     - name: Build and push
       uses: ./.github/workflows/actions/build-and-push
       with:
@@ -41,6 +44,11 @@ jobs:
         registry: ${{ secrets.REGISTRY_URL }}
         registry_login: ${{ secrets.REGISTRY_USERNAME }}
         registry_password: ${{ secrets.REGISTRY_PASSWORD }}
+    - name: Run Tests
+      uses: ./.github/workflows/actions/run-tests
+      with:
+        service: ${{ env.CHART }}
+        tag: ${{ steps.branch-name.outputs.branch }}
 
   deploy-to-aks:
     environment: Develop
@@ -57,7 +65,7 @@ jobs:
           resource_group: ${{ secrets.RESOURCE_GROUP }}
           registry_url: ${{ secrets.REGISTRY_URL }}
           image: ${{ env.IMAGE }}
-          tag: ${{ env.TAG }}
+          tag: ${{ steps.branch-name.outputs.branch }}
           chart: ${{ env.CHART }}
           chart_root: ${{ env.CHART_ROOT }}
           namespace: ${{ env.NAMESPACE }}        
