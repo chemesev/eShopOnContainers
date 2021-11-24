@@ -17,13 +17,14 @@ runs:
     - name: Run Unit Tests
       shell: bash
       run: |
+        echo "current tag: $TAG"
         docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up ${{ inputs.service }}-unit-test 
       env:
         TAG: ${{ inputs.tag }}
       working-directory: src/
     - name: Test Report
       uses: dorny/test-reporter@v1
-      if: success() || failure()    
+      if: always()
       with:
         name: UnitTests            
         path: './tests-results/${{ inputs.service }}-unit-test-results.xml'
