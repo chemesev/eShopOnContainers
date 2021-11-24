@@ -33,6 +33,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    - name: Get branch name
+      uses: mdecoleman/pr-branch-name@1.0.1
+      id: branch-name
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo ${{ steps.branch-name.outputs.branch }}      
     - name: Build and push
       uses: ./.github/workflows/actions/build-and-push
       with:
@@ -45,7 +51,7 @@ jobs:
       uses: ./.github/workflows/actions/run-tests
       with:
         service: ${{ env.CHART }}
-        tag: ${{ env.TAG }}
+        tag: ${{ steps.branch-name.outputs.branch }}
 
   deploy-to-aks:
     environment: Develop
@@ -62,7 +68,7 @@ jobs:
           resource_group: ${{ secrets.RESOURCE_GROUP }}
           registry_url: ${{ secrets.REGISTRY_URL }}
           image: ${{ env.IMAGE }}
-          tag: ${{ env.TAG }}
+          tag: ${{ steps.branch-name.outputs.branch }}
           chart: ${{ env.CHART }}
           chart_root: ${{ env.CHART_ROOT }}
           namespace: ${{ env.NAMESPACE }}        
