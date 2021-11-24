@@ -27,4 +27,19 @@ runs:
       with:
         name: UnitTests            
         path: './src/tests-results/${{ inputs.service }}-unit-test-results.xml'
+        reporter: dotnet-trx        
+    - name: Run Functional Tests
+      shell: bash
+      run: |
+        docker-compose -f docker-compose-tests.yml -f docker-compose-tests.override.yml up ${{ inputs.service }}-functional-test
+      env:
+        TAG: ${{ inputs.tag }}
+      working-directory: src/
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: IntegrationTests            
+        path: './src/tests-results/${{ inputs.service }}-functional-test-results.xml'
         reporter: dotnet-trx         
+         
